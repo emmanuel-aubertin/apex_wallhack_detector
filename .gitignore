@@ -1,4 +1,6 @@
 tmp*/
+.DS_Store
+
 
 # Ignore all image files
 *.jpg
