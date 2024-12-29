@@ -1,9 +1,11 @@
+#!/usr/bin/env bash
+
 #*******************************************************************************************#
-#*----- Auteur :        Aubertin Emmanuel               | For: Apex WallHack_detect     ****#
-#*----- Description :   Script use to build image dataset from youtube vids             ****#
+#*----- Author:        Aubertin Emmanuel               | For: Apex WallHack_detect     ****#
+#*----- Description:   Script used to build an image dataset from YouTube videos        ****#
 #*******************************************************************************************#
 
-PROGNAME=$(basename $0)
+PROGNAME=$(basename "$0")
 RELEASE="Revision 1.0"
 AUTHOR="(c) 2025 Aubertin Emmanuel"
 DEBUG=0
@@ -22,34 +24,32 @@ print_release() {
 }
 
 print_usage() {
-        echo ""
-        echo "$PROGNAME"
-        echo ""
-        echo "Usage: $PROGNAME | [-h | --help] | [-v | --version] | [-V | --verbose] | [-d | --youtube_dl] | [-y | --yt-dlp] | [-k | --keep] | [-o | --output_directory] | [-t | --tmp_directory] "
-        echo ""
-        echo "          -h  Show this help"
-        echo "          -v  Version"
-        echo "          -V  Verbose mode"
-        echo "          -k  Keep MP4 files"
-        echo "          -o  Output directory"
-        echo "          -d  Use youtube-dl (by default)"
-        echo "          -y  Use yt-dlp"
-        echo "          -f  Input file with youtube links (see PUT LINK TO DOC LATER)" 
-        echo "          -n  Number of images extracted from each video"
-        echo "          -o  Specify the output directory (output/ by default)"
-        echo "          -t  Specify the path to the video temps directory (tmp_video/ by default)"
-        echo "          -s  Skip video download"
-        echo ""
-        echo "Exemple: ./build_dataset.sh -o dataset/cheater -y -f apex_cheater.json -t tmp_cheater_vids -k"
-        echo ""
+    echo ""
+    echo "Usage: $PROGNAME | [-h | --help] | [-v | --version] | [-V | --verbose] | [-d | --youtube_dl] | [-y | --yt-dlp] | [-k | --keep] | [-o | --output_directory] | [-t | --tmp_directory] "
+    echo ""
+    echo "          -h  Show this help"
+    echo "          -v  Version"
+    echo "          -V  Verbose mode"
+    echo "          -k  Keep MP4 files"
+    echo "          -o  Output directory"
+    echo "          -d  Use youtube-dl (by default)"
+    echo "          -y  Use yt-dlp"
+    echo "          -f  Input file with YouTube links (see PUT LINK TO DOC LATER)"
+    echo "          -n  Number of images extracted from each video"
+    echo "          -o  Specify the output directory (output/ by default)"
+    echo "          -t  Specify the path to the temporary video directory (tmp_video/ by default)"
+    echo "          -s  Skip video download"
+    echo ""
+    echo "Example: ./build_dataset.sh -o dataset/cheater -y -f apex_cheater.json -t tmp_cheater_vids -k"
+    echo ""
 }
 
 print_help() {
-        print_release
-        echo ""
-        print_usage
-        echo ""
-        exit 0
+    print_release
+    echo ""
+    print_usage
+    echo ""
+    exit 0
 }
 
 while [ $# -gt 0 ]; do
@@ -92,7 +92,8 @@ while [ $# -gt 0 ]; do
         -V | --verbose)
             VERBOSE=1
             ;;
-        *)  echo "Argument inconnu: $1"
+        *)
+            echo "Unknown argument: $1"
             print_usage
             exit 1
             ;;
@@ -125,13 +126,14 @@ function log_verbose() {
 }
 
 function ask_yes_or_no() {
-    echo -n "[yes/no] : "
+    echo -n "[yes/no]: "
     read -r YESNO
     if [[ $YESNO =~ [yY] ]]; then
         return 0
     fi
     return 1
 }
+
 function dl_vids() {
     local video_url="$1"
     local video_title
@@ -212,7 +214,7 @@ function extract_images() {
             continue
         fi
 
-        # Ignore Intro and outro (10 seconds)
+        # Ignore intro and outro (10 seconds)
         video_duration=$(ffprobe -v error -show_entries format=duration -of default=nokey=1:noprint_wrappers=1 "$file")
         if [ -z "$video_duration" ] || (( $(echo "$video_duration < 30" | bc -l) )); then
             colored_echo "1;31m" "Error: Video too short to process (less than 30 seconds). Skipping $file."
@@ -222,13 +224,13 @@ function extract_images() {
         start_time=15
         end_time=$(echo "$video_duration - 15" | bc)
 
-        frame_interval=$((total_frames / number_img))
+        frame_interval=$(( total_frames / number_img ))
         if [ "$frame_interval" -eq 0 ]; then
             frame_interval=1
         fi
 
         log_verbose "Extracting images from $file with interval $frame_interval, ignoring first 15s and last 15s..."
-        ffmpeg -i "$file" -vf "select='between(t,$start_time,$end_time)*not(mod(n\,$frame_interval))'" -vsync vfr "$output_directory/${filename}_%04d.png" &> /dev/null
+        ffmpeg -i "$file" -vf "select='between(t,$start_time,$end_time)*not(mod(n,$frame_interval))'" -vsync vfr "$output_directory/${filename}_%04d.png" &> /dev/null
 
         if [ $? -eq 0 ]; then
             colored_echo "1;32m" "Images extracted successfully for $file."
@@ -238,12 +240,11 @@ function extract_images() {
     done
 }
 
-
 if [ $skip_download -eq 0 ]; then
     parse_links_file
     colored_echo "32m" "Download complete."
 else
-    colored_echo "32m" "Skipping Download."
+    colored_echo "32m" "Skipping download."
 fi
 
 extract_images
