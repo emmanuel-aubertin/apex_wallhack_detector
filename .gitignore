@@ -1,0 +1,33 @@
+tmp*/
+.DS_Store
+
+
+# Ignore all image files
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.tif
+*.webp
+*.svg
+*.ico
+
+
+
+# Ignore all video files
+*.mp4
+*.mkv
+*.avi
+*.mov
+*.wmv
+*.flv
+*.webm
+*.m4v
+*.3gp
+*.mpeg
+*.mpg
+*.ogv
+*.rm
+*.vob
