@@ -34,13 +34,14 @@ print_usage() {
     echo "          -o  Output directory"
     echo "          -d  Use youtube-dl (by default)"
     echo "          -y  Use yt-dlp"
-    echo "          -f  Input file with YouTube links (see PUT LINK TO DOC LATER)"
+    echo "          -f  Input file with YouTube links, json/txt only (see documentation)"
     echo "          -n  Number of images extracted from each video"
     echo "          -o  Specify the output directory (output/ by default)"
     echo "          -t  Specify the path to the temporary video directory (tmp_video/ by default)"
     echo "          -s  Skip video download"
     echo ""
     echo "Example: ./build_dataset.sh -o dataset/cheater -y -f apex_cheater.json -t tmp_cheater_vids -k"
+    echo "More documentation available at https://github.com/emmanuel-aubertin/apex_wallhack_detector"
     echo ""
 }
 
