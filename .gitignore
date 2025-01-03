@@ -1,6 +1,7 @@
 tmp*/
 .DS_Store
-
+models*/
+*.keras
 
 # Ignore all image files
 *.jpg
